@@ -1,9 +1,8 @@
 defmodule Discuss.TopicController do
   use DiscussWeb, :controller # this is the equivilent of doing class inheritance inside Elixir, specifically DiscussWeb's "controller" function, which itself imports other modules
   # this is how we code share, just by adding the line above, we've added a ton of functionality into our controller
-  def new(conn, params) do
+  def new(conn, _params) do
     # the 'conn' struct holds data for the request and the response.
-    IO.puts 'hi mom'
   end
 end
 
