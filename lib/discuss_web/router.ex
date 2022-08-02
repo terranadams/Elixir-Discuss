@@ -18,6 +18,9 @@ defmodule DiscussWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+
+    get "/topics/new", TopicController, :new
+    # when someone requests that endpoint, run the "new" function in the "TopicController" module
   end
 
   # Other scopes may use custom stacks.
