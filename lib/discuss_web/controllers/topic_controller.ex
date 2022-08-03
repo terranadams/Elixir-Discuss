@@ -10,6 +10,8 @@ defmodule DiscussWeb.TopicController do
     struct = %Discuss.Topic{} # this struct starts off empty because we don't have data for the form yet.
     params = %{} # this is also empty because we don't have any changes yet.
     changeset = Discuss.Topic.changeset(struct, params)
+
+    render conn, "new.html"
   end
 end
 
