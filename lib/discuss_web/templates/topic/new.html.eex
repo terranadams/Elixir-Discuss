@@ -1,6 +1,14 @@
-<%# <%= form_for @changeset, post_path(@conn, :create), fn -> %>
+<%=# Lecture 77 %>
 
-<%# <% end %>
-<form>
+<%= form_for @changeset, Routes.topic_path(@conn, :create), fn f -> %>
+    <div class="form-group">
+        <%= text_input f, :title, placeholder: "Title", class: "form-control" %>
+    </div>
+    <%= submit "Save Topic" %>
+<% end %>
+
+<%=# @sum %> <%=# refer to topic_controller for where this variable comes from %>
+<%=# 1 + 1 %>
+<%# <form>
 <input/>
-<form>
+</form> %>

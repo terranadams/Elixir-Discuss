@@ -3,15 +3,18 @@ defmodule DiscussWeb.TopicController do
   # this is how we code share, just by adding the line above, we've added a ton of functionality into our controller
   def new(conn, params) do
     # the 'conn' struct holds data for the request and the response.
-
     # if we write 'alias Discuss.Topic' right here, then we are able to shortcut the phrase "Discuss.Topic" to just "Topic" whenever we reference it below...
     #... so the 'struct' variable below could just be "struct = %Topic{}"
-
     struct = %Discuss.Topic{} # this struct starts off empty because we don't have data for the form yet.
     params = %{} # this is also empty because we don't have any changes yet.
     changeset = Discuss.Topic.changeset(struct, params)
+    #sum = 1 + 1
+    render conn, "new.html", changeset: changeset  #sum: sum ... Lecture 77
+  end
 
-    render conn, "new.html"
+
+  def create(conn, params) do
+    
   end
 end
 
