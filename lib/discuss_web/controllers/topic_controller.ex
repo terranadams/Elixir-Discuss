@@ -1,7 +1,7 @@
 defmodule DiscussWeb.TopicController do
   use DiscussWeb, :controller # this is the equivilent of doing class inheritance inside Elixir, specifically DiscussWeb's "controller" function, which itself imports other modules
   # this is how we code share, just by adding the line above, we've added a ton of functionality into our controller
-  def new(conn, params) do
+  def new(conn, _params) do
     # the 'conn' struct holds data for the request and the response.
     # if we write 'alias Discuss.Topic' right here, then we are able to shortcut the phrase "Discuss.Topic" to just "Topic" whenever we reference it below...
     #... so the 'struct' variable below could just be "struct = %Topic{}"
@@ -14,7 +14,10 @@ defmodule DiscussWeb.TopicController do
 
 
   def create(conn, params) do
-    
+    # IO.inspect params
+    %{"topic" => topic} = params # because the format of the 'params' map ( {"x" => "asdf"} instead of {x: "asdf"} ), we must pattern match the variable out of it instead of doing dot notation (object.x)
+    # again, we can pattern match this variable right in the argument declaration line by replacing "params" with  "%{"topic" => topic}"
+
   end
 end
 
