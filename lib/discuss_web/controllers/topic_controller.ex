@@ -1,23 +1,35 @@
 defmodule DiscussWeb.TopicController do
   use DiscussWeb, :controller # this is the equivilent of doing class inheritance inside Elixir, specifically DiscussWeb's "controller" function, which itself imports other modules
   # this is how we code share, just by adding the line above, we've added a ton of functionality into our controller
+
+  alias Discuss.Topic
+  alias Discuss.Repo
+   # if we write 'alias Discuss.Topic' right here, then we are able to shortcut the phrase "Discuss.Topic" to just "Topic" whenever we reference it below...
+  #... so the 'struct' variable below could just be "struct = %Topic{}" instead of "%Discuss.Topic{}"
+
   def new(conn, _params) do
     # the 'conn' struct holds data for the request and the response.
-    # if we write 'alias Discuss.Topic' right here, then we are able to shortcut the phrase "Discuss.Topic" to just "Topic" whenever we reference it below...
-    #... so the 'struct' variable below could just be "struct = %Topic{}"
-    struct = %Discuss.Topic{} # this struct starts off empty because we don't have data for the form yet.
-    params = %{} # this is also empty because we don't have any changes yet.
-    changeset = Discuss.Topic.changeset(struct, params)
+
+    struct = %Topic{} # this struct starts off empty because we don't have data for the form yet.
+    params = %{} # this is also empty because we don't have any changes yet. New info will be capturec and added to the struct when the form gets submitted, to be added to the db later
+    changeset = Topic.changeset(struct, params) #this is where the changeset starts (still empty), it gets passed to all the pages aquained with topics, this page will add data to it when the form gets submitted, the user then gets redirected to antoher page
     #sum = 1 + 1
-    render conn, "new.html", changeset: changeset  #sum: sum ... Lecture 77
+    render conn, "new.html", changeset: changeset#, sum: sum ... Lecture 77
   end
 
 
   def create(conn, params) do
     # IO.inspect params
-    %{"topic" => topic} = params # because the format of the 'params' map ( {"x" => "asdf"} instead of {x: "asdf"} ), we must pattern match the variable out of it instead of doing dot notation (object.x)
+    %{"topic" => topic} = params # because the format of the 'params' map is {"x" => "asdf"} instead of {x: "asdf"} , we must pattern match the variable out of it instead of doing dot notation like params.topic
     # again, we can pattern match this variable right in the argument declaration line by replacing "params" with  "%{"topic" => topic}"
+    changeset = Topic.changeset(%Discuss.Topic{}, topic)
+    case Repo.insert(changeset) do
+      {:ok, post} -> IO.inspect post
+      {:error, changeset} ->
+        IO.inspect changeset
+        render conn, "new.html", changeset: changeset
 
+    end
   end
 end
 
