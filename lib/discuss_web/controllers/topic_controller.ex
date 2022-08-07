@@ -7,6 +7,11 @@ defmodule DiscussWeb.TopicController do
    # if we write 'alias Discuss.Topic' right here, then we are able to shortcut the phrase "Discuss.Topic" to just "Topic" whenever we reference it below...
   #... so the 'struct' variable below could just be "struct = %Topic{}" instead of "%Discuss.Topic{}"
 
+  def index(conn, _params) do
+    # topics = Repo.all(Topic) # this is our query
+    render conn, "index.html"#, topics: topics
+  end
+
   def new(conn, _params) do
     # the 'conn' struct holds data for the request and the response.
 
@@ -22,14 +27,17 @@ defmodule DiscussWeb.TopicController do
     # IO.inspect params
     %{"topic" => topic} = params # because the format of the 'params' map is {"x" => "asdf"} instead of {x: "asdf"} , we must pattern match the variable out of it instead of doing dot notation like params.topic
     # again, we can pattern match this variable right in the argument declaration line by replacing "params" with  "%{"topic" => topic}"
-    changeset = Topic.changeset(%Discuss.Topic{}, topic)
-    case Repo.insert(changeset) do
-      {:ok, post} -> IO.inspect post
-      {:error, changeset} ->
-        IO.inspect changeset
-        render conn, "new.html", changeset: changeset
-
-    end
+    changeset = Topic.changeset(%Topic{}, topic)
+    IO.inspect changeset
+    Repo.insert(changeset)
+    # case Repo.insert(changeset) do
+    #   {:ok, post} ->
+    #     IO.inspect post
+    #     conn
+    #   {:error, changeset} ->
+    #     IO.inspect changeset
+    #     render conn, "new.html", changeset: changeset
+    # end
   end
 end
 

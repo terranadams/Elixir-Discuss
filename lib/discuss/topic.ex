@@ -12,7 +12,7 @@ defmodule Discuss.Topic do
 
 
   @doc false
-  def changeset(topic, attrs) do # a changeset is an object that holds/records the updates in our db we need to make. The first arg is what the record was, the second is what it needs to be
+  def changeset(topic, attrs) do # a changeset is an struct object that holds/records the updates in our db we need to make before they get submitted. The first arg is what the record was, the second is what it needs to be
     # the 'topic' arg is a struct that contains data, reps a record, whether it's a new or prev existing one
     # attrs (params) contain properties we want to update the struct with
     topic

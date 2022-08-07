@@ -6,7 +6,7 @@
     <div class="form-group">
         <%= text_input f, :title, placeholder: "Title", class: "form-control" %>
         <%= error_tag f, :title %> <%=#we want this tag to look for any errors having to do with the title property off of the changeset %>
-        <%=## text_input and error_tag things are called helpers, prewritten code that renders things on the page for us, and gives it a label "title" for us to grab the data with when the form gets submitted, which then gets pulled from that "@conn" variable %>
+        <%=## form_for, text_input and error_tag things are called helpers, prewritten code that renders things on the page for us %>
     </div>
     <%= submit "Save Topic", class: "btn btn-primary" %>
 <% end %>
