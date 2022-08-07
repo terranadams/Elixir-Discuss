@@ -6,6 +6,7 @@ defmodule Discuss.Repo.Migrations.AddTopics do
   def change do
     create table(:topics) do
       add :title, :string
+      timestamps()
     end # this is a set of instructions being passed to postgres by phoenix saying "create a new table called 'topics' with a 'title' column string type
   end
 end
