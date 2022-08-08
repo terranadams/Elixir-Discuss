@@ -1,7 +1,7 @@
 defmodule DiscussWeb.Router do
   use DiscussWeb, :router
 
-  pipeline :browser do
+  pipeline :browser do # a pipeline of plugs, these ensures that preprocessing on the request happens before we accept the request itself
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
@@ -24,6 +24,15 @@ defmodule DiscussWeb.Router do
     put "/topics/:id", TopicController, :update
     delete "/topics/:id", TopicController, :delete
     # if restful convension is followed, we can remove all the code above and put 'resouces "/", TopicController'
+  end
+
+  scope "/auth", DiscussWeb do
+    pipe_through :browser
+
+    get "/:provider", AuthController, :request #uberauth is already setup to look at the params object and provider value to decide which strategy to use (in this case, github)
+    get "/:provider/callback", AuthController, :callback
+    #"/auth/github"
+    #"/auth/github/callback"
   end
 
   # Other scopes may use custom stacks.
