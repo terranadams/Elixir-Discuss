@@ -31,7 +31,7 @@ defmodule DiscussWeb.TopicController do
     IO.inspect changeset
     # Repo.insert(changeset)
     case Repo.insert(changeset) do
-      {:ok, post} ->
+      {:ok, _topic} ->
         conn
         |> put_flash(:info, "Topic Created") # this shows a quick message to the user one time when the page reloads
         |> redirect(to: Routes.topic_path(conn, :index))
@@ -39,6 +39,35 @@ defmodule DiscussWeb.TopicController do
         IO.inspect changeset
         render conn, "new.html", changeset: changeset
     end
+  end
+
+  def edit(conn, %{"id" => topic_id}) do
+    topic = Repo.get(Topic, topic_id) # we're finding a specific document from our 'topics' table
+    changeset = Topic.changeset(topic) # we're trying to edit a pre-existing record, we pass it to our html doc
+    render conn, "edit.html", changeset: changeset, topic: topic
+  end
+
+  def update(conn, %{"id" => topic_id, "topic" => topic}) do
+    old_topic = Repo.get(Topic, topic_id)
+    changeset = Topic.changeset(old_topic, topic) # we're making a changeset out of an existing record, and passing the new changes to it (the topic from the form)
+    # changeset = Repo.get(Topic, topic_id) |> Topic.changeset((topic)) # we would use this, but we need to make use of old_topic so we can pass it to the form for the error helper
+    case Repo.update(changeset) do # the changeset contains the record ID to update
+      {:ok, _topic} ->
+        conn
+        |> put_flash(:info, "Topic Updated")
+        |> redirect(to: Routes.topic_path(conn, :index))
+      {:error, changeset} ->
+        render conn, "edit.html", changeset: changeset, topic: old_topic
+      end
+  end
+
+  def delete(conn, params) do
+    %{"id" => topic_id} = params
+    Repo.get!(Topic, topic_id) |> Repo.delete! # we don't delete by ID, we delete by obtaining the full record's struct and passing it into the delete func
+     # adding the '!' aka 'bang', returns an error if anything goes wrong with the delete process (permissions, etc)
+    conn
+    |> put_flash(:info, "Topic Deleted")
+    |> redirect(to: Routes.topic_path(conn, :index))
   end
 end
 

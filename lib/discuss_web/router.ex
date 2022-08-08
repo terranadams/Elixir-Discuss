@@ -16,14 +16,14 @@ defmodule DiscussWeb.Router do
 
   scope "/", DiscussWeb do
     pipe_through :browser
-
     get "/", TopicController, :index
-    # resources "/", TopicController
-
+    # when someone requests that endpoint, it runs the "index" function in the "TopicController" module
     get "/topics/new", TopicController, :new
-    # when someone requests that endpoint, it runs the "new" function in the "TopicController" module
     post "/topics", TopicController, :create
-
+    get "/topics/:id/edit", TopicController, :edit
+    put "/topics/:id", TopicController, :update
+    delete "/topics/:id", TopicController, :delete
+    # if restful convension is followed, we can remove all the code above and put 'resouces "/", TopicController'
   end
 
   # Other scopes may use custom stacks.
