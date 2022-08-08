@@ -1,6 +1,7 @@
 defmodule DiscussWeb.TopicController do
   use DiscussWeb, :controller # this is the equivilent of doing class inheritance inside Elixir, specifically DiscussWeb's "controller" function, which itself imports other modules
   # this is how we code share, just by adding the line above, we've added a ton of functionality into our controller
+  alias DiscussWeb.Router.Helpers, as: Routes
 
   alias Discuss.Topic
   alias Discuss.Repo
@@ -8,13 +9,12 @@ defmodule DiscussWeb.TopicController do
   #... so the 'struct' variable below could just be "struct = %Topic{}" instead of "%Discuss.Topic{}"
 
   def index(conn, _params) do
-    # topics = Repo.all(Topic) # this is our query
-    render conn, "index.html"#, topics: topics
+    topics = Repo.all(Topic) # this is our query
+    render conn, "index.html", topics: topics
   end
 
   def new(conn, _params) do
-    # the 'conn' struct holds data for the request and the response.
-
+    # the 'conn' struct holds data for the request and the response
     struct = %Topic{} # this struct starts off empty because we don't have data for the form yet.
     params = %{} # this is also empty because we don't have any changes yet. New info will be capturec and added to the struct when the form gets submitted, to be added to the db later
     changeset = Topic.changeset(struct, params) #this is where the changeset starts (still empty), it gets passed to all the pages aquained with topics, this page will add data to it when the form gets submitted, the user then gets redirected to antoher page
@@ -29,15 +29,16 @@ defmodule DiscussWeb.TopicController do
     # again, we can pattern match this variable right in the argument declaration line by replacing "params" with  "%{"topic" => topic}"
     changeset = Topic.changeset(%Topic{}, topic)
     IO.inspect changeset
-    Repo.insert(changeset)
-    # case Repo.insert(changeset) do
-    #   {:ok, post} ->
-    #     IO.inspect post
-    #     conn
-    #   {:error, changeset} ->
-    #     IO.inspect changeset
-    #     render conn, "new.html", changeset: changeset
-    # end
+    # Repo.insert(changeset)
+    case Repo.insert(changeset) do
+      {:ok, post} ->
+        conn
+        |> put_flash(:info, "Topic Created") # this shows a quick message to the user one time when the page reloads
+        |> redirect(to: Routes.topic_path(conn, :index))
+      {:error, changeset} ->
+        IO.inspect changeset
+        render conn, "new.html", changeset: changeset
+    end
   end
 end
 
