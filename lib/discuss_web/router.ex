@@ -2,12 +2,13 @@ defmodule DiscussWeb.Router do
   use DiscussWeb, :router
 
   pipeline :browser do # a pipeline of plugs, these ensures that preprocessing on the request happens before we accept the request itself
-    plug :accepts, ["html"]
+    plug :accepts, ["html"] # basically little functions that transform our incoming request / connection object
     plug :fetch_session
     plug :fetch_live_flash
     plug :put_root_layout, {DiscussWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug Discuss.Plugs.SetUser # this is the plug we made that sets the current user to the conn object
   end
 
   pipeline :api do
@@ -29,10 +30,11 @@ defmodule DiscussWeb.Router do
   scope "/auth", DiscussWeb do
     pipe_through :browser
 
+    get "/signout", AuthController, :signout
     get "/:provider", AuthController, :request #uberauth is already setup to look at the params object and provider value to decide which strategy to use (in this case, github)
+    # "/auth/github"
     get "/:provider/callback", AuthController, :callback
-    #"/auth/github"
-    #"/auth/github/callback"
+    # "/auth/github/callback"
   end
 
   # Other scopes may use custom stacks.

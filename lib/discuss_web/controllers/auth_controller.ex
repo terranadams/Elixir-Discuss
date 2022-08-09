@@ -1,17 +1,23 @@
 defmodule DiscussWeb.AuthController do
   use DiscussWeb, :controller
-  plug Ueberauth # this is a library that does a lot of oauth heavy lifting for us once we set it up
+  plug Ueberauth # this is a library that does a lot of OAuth heavy lifting for us once we set it up, we added it in mix.exs and configured it in config/config.exs
   alias DiscussWeb.Router.Helpers, as: Routes
   alias Discuss.User
   alias Discuss.Repo
 
 
-  def callback(%{assigns: %{ueberauth_auth: auth}} = conn, params) do
+  def callback(%{assigns: %{ueberauth_auth: auth}} = conn, params) do # the 'assigns' property of the conn object is used for assigning data that we want to carry along inside our connection
     # IO.inspect auth
     user_params = %{token: auth.credentials.token, email: auth.info.email, provider: "github"}
     changeset = User.changeset(%User{}, user_params)
 
     signin(conn, changeset)
+  end
+
+  def signout(conn, _params) do
+    conn
+    |> configure_session(drop: true)
+    |> redirect(to: Routes.topic_path(conn, :index))
   end
 
   defp signin(conn, changeset) do
