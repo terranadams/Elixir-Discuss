@@ -3,7 +3,7 @@
 <ul class="collection">
     <%= for topic <- @topics do %>
         <li class="collection-item">
-            <%= topic.title %>
+            <%= link topic.title, to: Routes.topic_path(@conn, :show, topic) %> <%# we're rendering each topic in the db as a clickable link that takes you to it's own 'show.html' page and passing in the topic as a param to render data from in it %>
             <%= if @conn.assigns.user.id == topic.user_id do %>
             <div class="right">
                 <%= link "Edit", to: Routes.topic_path(@conn, :edit, topic) %>
