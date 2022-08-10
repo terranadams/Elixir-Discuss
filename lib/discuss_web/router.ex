@@ -24,6 +24,7 @@ defmodule DiscussWeb.Router do
     get "/topics/:id/edit", TopicController, :edit
     put "/topics/:id", TopicController, :update
     delete "/topics/:id", TopicController, :delete
+    # resources "/", TopicController
     # if restful convension is followed, we can remove all the code above and put 'resouces "/", TopicController'
   end
 
