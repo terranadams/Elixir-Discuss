@@ -6,6 +6,7 @@ defmodule Discuss.Topic do
 
   schema "topics" do
     field :title, :string
+    belongs_to :user, Discuss.User # "hey, this topic belongs to a singular user"
     timestamps()
   end
    # model files require a schema (like above) and code for validation (checking data types, etc.)

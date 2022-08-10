@@ -8,6 +8,9 @@ defmodule DiscussWeb.TopicController do
    # if we write 'alias Discuss.Topic' right here, then we are able to shortcut the phrase "Discuss.Topic" to just "Topic" whenever we reference it below...
   #... so the 'struct' variable below could just be "struct = %Topic{}" instead of "%Discuss.Topic{}"
 
+  plug Discuss.Plugs.RequireAuth when action in [:new, :create, :edit, :update, :delete] # this plug will execute before any of the handlers listed are called
+  plug :check_topic_owner when action in [:update, :edit, :delete]
+
   def index(conn, _params) do
     topics = Repo.all(Topic) # this is our query
     render conn, "index.html", topics: topics
@@ -27,7 +30,11 @@ defmodule DiscussWeb.TopicController do
     # IO.inspect params
     %{"topic" => topic} = params # because the format of the 'params' map is {"x" => "asdf"} instead of {x: "asdf"} , we must pattern match the variable out of it instead of doing dot notation like params.topic
     # again, we can pattern match this variable right in the argument declaration line by replacing "params" with  "%{"topic" => topic}"
-    changeset = Topic.changeset(%Topic{}, topic)
+
+    changeset = conn.assigns.user # we're talking the current user off our conn object, and piping it to build_assoc to produce a Topic struct with a ref to the current user
+    |> Ecto.build_assoc(:topics) # so the new topic that gets created has a built in ref to the current user, we take the changeset, and stick it into our database with Topic
+    |> Topic.changeset(topic)
+
     IO.inspect changeset
     # Repo.insert(changeset)
     case Repo.insert(changeset) do
@@ -69,7 +76,22 @@ defmodule DiscussWeb.TopicController do
     |> put_flash(:info, "Topic Deleted")
     |> redirect(to: Routes.topic_path(conn, :index))
   end
+
+  def check_topic_owner(conn, _params) do
+    %{params: %{"id" => topic_id}} = conn
+    if Repo.get(Topic, topic_id).user_id == conn.assigns.user.id do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You cannot edit that")
+      |> redirect(to: Routes.topic_path(conn, :index))
+      |> halt()
+    end
+  end
+
 end
+
+
 
 # ********************************* IMPORTANT INFO FOR v1.3 of Phx
 # You will need to manually add your model to the following path (note the different use/imports):
